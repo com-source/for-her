@@ -11,21 +11,20 @@ header{text-align:center;padding:1.5rem;color:#fff;background:linear-gradient(13
 .container{max-width:1000px;margin:auto;padding:10px}
 .card{background:#fff;border-radius:15px;padding:15px;margin:15px 0;box-shadow:0 8px 20px rgba(0,0,0,0.08)}
 .table-wrapper{overflow-x:auto}
-.table{width:100%;border-collapse:collapse;font-size:12px;min-width:800px}
+.table{width:100%;border-collapse:collapse;font-size:12px;min-width:900px}
 .table th,.table td{border:1px solid #eee;padding:6px;text-align:center}
 button{border:none;border-radius:6px;padding:5px 8px;background:#eee;cursor:pointer}
 button.active{background:linear-gradient(135deg,#4da6ff,#ff4d8d);color:#fff}
-input{width:80px;padding:5px;border-radius:6px;border:1px solid #ddd}
+input{width:90px;padding:6px;border-radius:8px;border:1px solid #ddd}
 .progress{height:12px;background:#eee;border-radius:20px;overflow:hidden;margin-bottom:10px}
 .bar{height:100%;width:0%;background:linear-gradient(135deg,#4da6ff,#ff4d8d)}
 .good{background:#e6ffe6}
 .bad{background:#ffe6e6}
 
-/* Mobile optimization */
 @media (max-width:600px){
   header h1{font-size:1.5rem}
   .card{padding:10px}
-  input{width:65px;font-size:10px}
+  input{width:70px;font-size:10px}
   button{padding:4px 6px;font-size:10px}
 }
 </style>
@@ -47,15 +46,16 @@ input{width:80px;padding:5px;border-radius:6px;border:1px solid #ddd}
 <tr>
 <th>Day</th>
 <th>Date</th>
-<th>M</th>
-<th>B</th>
-<th>L</th>
-<th>S</th>
-<th>D</th>
+<th>Morning</th>
+<th>Breakfast</th>
+<th>Lunch</th>
+<th>Snack</th>
+<th>Dinner</th>
 <th>💧</th>
-<th>Ex</th>
+<th>Sleep</th>
+<th>Exercise</th>
 <th>Min</th>
-<th>Notes</th>
+<th>Weight</th>
 </tr>
 </table>
 </div>
@@ -65,7 +65,7 @@ input{width:80px;padding:5px;border-radius:6px;border:1px solid #ddd}
 
 <script>
 const table=document.getElementById('tracker');
-let total=30*6;
+let total=30*3; // only Morning, Water, Sleep buttons
 
 function update(){
  let active=document.querySelectorAll('.active').length;
@@ -108,32 +108,52 @@ for(let i=1;i<=30;i++){
  r.insertCell(0).innerText=i;
  r.insertCell(1).innerText=dates[i-1];
 
- for(let j=0;j<6;j++){
-  let c=r.insertCell(j+2);
-  let b=document.createElement('button');
-  b.innerText='✓';
-  b.classList.add('track');
-  b.onclick=()=>{b.classList.toggle('active');update()};
-  c.appendChild(b);
- }
+ // Morning button
+ let c1=r.insertCell(2);
+ let b1=document.createElement('button');
+ b1.innerText='✓';
+ b1.classList.add('track');
+ b1.onclick=()=>{b1.classList.toggle('active');update()};
+ c1.appendChild(b1);
 
- let ex=r.insertCell(8);
- let inp1=document.createElement('input');
- inp1.placeholder='Run';
- inp1.oninput=saveAll;
- ex.appendChild(inp1);
+ // Inputs for meals
+ let bf=r.insertCell(3);
+ let i1=document.createElement('input'); i1.placeholder='Breakfast'; i1.oninput=saveAll; bf.appendChild(i1);
 
- let dur=r.insertCell(9);
- let inp2=document.createElement('input');
- inp2.placeholder='30';
- inp2.oninput=saveAll;
- dur.appendChild(inp2);
+ let l=r.insertCell(4);
+ let i2=document.createElement('input'); i2.placeholder='Lunch'; i2.oninput=saveAll; l.appendChild(i2);
 
- let notes=r.insertCell(10);
- let inp3=document.createElement('input');
- inp3.placeholder='...';
- inp3.oninput=saveAll;
- notes.appendChild(inp3);
+ let s=r.insertCell(5);
+ let i3=document.createElement('input'); i3.placeholder='Snack'; i3.oninput=saveAll; s.appendChild(i3);
+
+ let d=r.insertCell(6);
+ let i4=document.createElement('input'); i4.placeholder='Dinner'; i4.oninput=saveAll; d.appendChild(i4);
+
+ // Water button
+ let c2=r.insertCell(7);
+ let b2=document.createElement('button');
+ b2.innerText='✓'; b2.classList.add('track');
+ b2.onclick=()=>{b2.classList.toggle('active');update()};
+ c2.appendChild(b2);
+
+ // Sleep button
+ let c3=r.insertCell(8);
+ let b3=document.createElement('button');
+ b3.innerText='✓'; b3.classList.add('track');
+ b3.onclick=()=>{b3.classList.toggle('active');update()};
+ c3.appendChild(b3);
+
+ // Exercise input
+ let ex=r.insertCell(9);
+ let i5=document.createElement('input'); i5.placeholder='Run'; i5.oninput=saveAll; ex.appendChild(i5);
+
+ // Duration
+ let dur=r.insertCell(10);
+ let i6=document.createElement('input'); i6.placeholder='30'; i6.oninput=saveAll; dur.appendChild(i6);
+
+ // Weight (replaces Notes)
+ let weight=r.insertCell(11);
+ let i7=document.createElement('input'); i7.placeholder='kg'; i7.oninput=saveAll; weight.appendChild(i7);
 }
 
 load();
