@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>For You 💙💖</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --pink:#ff4d8d;
+  --blue:#4da6ff;
+  --bg: linear-gradient(135deg,#dbeafe,#ffe4f0);
+}
+*{box-sizing:border-box}
+body{
+  margin:0;
+  font-family:'Poppins',sans-serif;
+  background:var(--bg);
+  color:#333;
+}
+header{
+  text-align:center;
+  padding:2rem;
+  color:#fff;
+  background: linear-gradient(135deg,var(--blue),var(--pink));
+  border-bottom-left-radius:30px;
+  border-bottom-right-radius:30px;
+}
+header h1{margin:0;font-size:2.3rem}
+.container{max-width:950px;margin:auto;padding:15px}
+.card{
+  background:#fff;
+  border-radius:20px;
+  padding:20px;
+  margin:20px 0;
+  box-shadow:0 10px 25px rgba(0,0,0,0.08);
+}
+h2{color:var(--pink)}
+ul{padding-left:20px}
+
+.table{width:100%;border-collapse:collapse}
+.table th,.table td{padding:10px;border:1px solid #eee;text-align:center}
+.table th{background:#f9f9f9}
+
+button{
+  border:none;
+  border-radius:50%;
+  padding:8px 12px;
+  background:#eee;
+  cursor:pointer;
+  transition:0.2s;
+}
+button.active{
+  background:linear-gradient(135deg,var(--blue),var(--pink));
+  color:#fff;
+  transform:scale(1.1);
+}
+button:hover{transform:scale(1.1)}
+
+.progress{height:18px;background:#eee;border-radius:20px;overflow:hidden}
+.bar{height:100%;width:0%;background:linear-gradient(135deg,var(--blue),var(--pink));transition:0.3s}
+
+.flex{display:flex;gap:15px;flex-wrap:wrap}
+.stat{
+  flex:1;
+  background:linear-gradient(135deg,var(--blue),var(--pink));
+  color:#fff;
+  border-radius:15px;
+  padding:15px;
+  text-align:center;
+}
+
+input{
+  padding:8px;border-radius:10px;border:1px solid #ddd
+}
+
+.music{
+  position:fixed;
+  bottom:20px;
+  right:20px;
+  background:linear-gradient(135deg,var(--blue),var(--pink));
+  color:#fff;
+  padding:10px 15px;
+  border-radius:20px;
+  cursor:pointer;
+}
+
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Hey Suryakshi 💖</h1>
+  <p>Your glow-up dashboard 💙</p>
+</header>
+
+<div class="container">
+
+<div class="card flex">
+  <div class="stat">
+    <h3 id="streak">0</h3>
+    <p>🔥 Streak</p>
+  </div>
+  <div class="stat">
+    <h3 id="percent">0%</h3>
+    <p>📊 Progress</p>
+  </div>
+</div>
+
+<div class="card">
+  <h2>💪 Goal</h2>
+  <p>Target Weight: 50–63 kg</p>
+</div>
+
+<div class="card">
+  <h2>🥗 Diet</h2>
+  <ul>
+    <li>Morning detox water</li>
+    <li>Eggs + low oil breakfast</li>
+    <li>Fruits</li>
+    <li>Balanced lunch</li>
+    <li>Light snacks</li>
+    <li>Salad-heavy dinner</li>
+  </ul>
+</div>
+
+<div class="card">
+  <h2>🏃 Exercise</h2>
+  <ul>
+    <li>Walking</li>
+    <li>Yoga</li>
+    <li>Cycling</li>
+    <li>Core workouts</li>
+  </ul>
+</div>
+
+<div class="card">
+  <h2>⚖️ Weight Tracker</h2>
+  <input type="number" id="weightInput" placeholder="Enter weight">
+  <button onclick="saveWeight()">Save</button>
+  <p id="lastWeight"></p>
+</div>
+
+<div class="card">
+  <h2>📅 Habit Tracker</h2>
+  <div class="progress"><div class="bar" id="bar"></div></div>
+  <table class="table" id="tracker">
+    <tr>
+      <th>Day</th><th>M</th><th>D</th><th>W</th><th>💧</th><th>😴</th>
+    </tr>
+  </table>
+</div>
+
+<div class="card">
+  <h2>💌</h2>
+  <p style="text-align:center">I made this for you ❤️<br>You’re already amazing.</p>
+</div>
+
+</div>
+
+<div class="music" onclick="toggleMusic()">🎵</div>
+<audio id="bgm" loop>
+  <source src="https://www.bensound.com/bensound-music/bensound-love.mp3">
+</audio>
+
+<script>
+const table=document.getElementById('tracker');
+let total=30*5;
+
+function update(){
+ let active=document.querySelectorAll('.active').length;
+ let percent=(active/total)*100;
+ document.getElementById('bar').style.width=percent+'%';
+ document.getElementById('percent').innerText=Math.round(percent)+'%';
+ localStorage.setItem('state',JSON.stringify(getState()));
+ updateStreak();
+}
+
+function getState(){
+ let s=[];
+ document.querySelectorAll('button.track').forEach(b=>s.push(b.classList.contains('active')));
+ return s;
+}
+
+function load(){
+ let s=JSON.parse(localStorage.getItem('state'));
+ if(!s) return;
+ let btns=document.querySelectorAll('button.track');
+ btns.forEach((b,i)=>{if(s[i]) b.classList.add('active')});
+ update();
+}
+
+function updateStreak(){
+ let streak=0;
+ for(let i=1;i<=30;i++){
+   let row=[...document.querySelectorAll(`[data-day='${i}']`)];
+   if(row.every(b=>b.classList.contains('active'))) streak++;
+   else break;
+ }
+ document.getElementById('streak').innerText=streak;
+}
+
+for(let i=1;i<=30;i++){
+ let r=table.insertRow();
+ r.insertCell(0).innerText=i;
+ for(let j=1;j<=5;j++){
+  let c=r.insertCell(j);
+  let b=document.createElement('button');
+  b.innerText='✓';
+  b.classList.add('track');
+  b.dataset.day=i;
+  b.onclick=()=>{b.classList.toggle('active');update()};
+  c.appendChild(b);
+ }
+}
+
+function saveWeight(){
+ let w=document.getElementById('weightInput').value;
+ localStorage.setItem('weight',w);
+ document.getElementById('lastWeight').innerText='Last: '+w+' kg';
+}
+
+function loadWeight(){
+ let w=localStorage.getItem('weight');
+ if(w) document.getElementById('lastWeight').innerText='Last: '+w+' kg';
+}
+
+function toggleMusic(){
+ let m=document.getElementById('bgm');
+ if(m.paused) m.play(); else m.pause();
+}
+
+load();
+loadWeight();
+</script>
+
+</body>
+</html>
