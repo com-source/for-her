@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>For You 💙💖</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+body{font-family:Poppins;margin:0;background:linear-gradient(135deg,#dbeafe,#ffe4f0)}
+header{text-align:center;padding:2rem;color:#fff;background:linear-gradient(135deg,#4da6ff,#ff4d8d)}
+.container{max-width:1100px;margin:auto;padding:15px}
+.card{background:#fff;border-radius:20px;padding:20px;margin:20px 0;box-shadow:0 10px 25px rgba(0,0,0,0.08)}
+.table{width:100%;border-collapse:collapse;font-size:12px}
+.table th,.table td{border:1px solid #eee;padding:6px;text-align:center}
+button{border:none;border-radius:6px;padding:5px 8px;background:#eee;cursor:pointer}
+button.active{background:linear-gradient(135deg,#4da6ff,#ff4d8d);color:#fff}
+input{width:90%;padding:6px;border-radius:8px;border:1px solid #ddd}
+.progress{height:15px;background:#eee;border-radius:20px;overflow:hidden;margin-bottom:10px}
+.bar{height:100%;width:0%;background:linear-gradient(135deg,#4da6ff,#ff4d8d)}
+.good{background:#e6ffe6}
+.bad{background:#ffe6e6}
+</style>
+</head>
+<body>
+
+<header>
+<h1>Hey Suryakshi 💖</h1>
+<p>Your glow-up tracker 💙</p>
+</header>
+
+<div class="container">
+
+<div class="card">
+<h2>📅 30 Day Tracker</h2>
+<div class="progress"><div class="bar" id="bar"></div></div>
+<table class="table" id="tracker">
+<tr>
+<th>Day</th>
+<th>Date</th>
+<th>Morning</th>
+<th>Breakfast</th>
+<th>Lunch</th>
+<th>Snack</th>
+<th>Dinner</th>
+<th>Water</th>
+<th>Exercise Type</th>
+<th>Duration</th>
+<th>Notes</th>
+</tr>
+</table>
+</div>
+
+</div>
+
+<script>
+const table=document.getElementById('tracker');
+let total=30*6; // 6 check buttons per day
+
+function update(){
+ let active=document.querySelectorAll('.active').length;
+ let percent=(active/total)*100;
+ document.getElementById('bar').style.width=percent+'%';
+ saveAll();
+ updateRowColors();
+}
+
+function saveAll(){
+ let data={buttons:[],inputs:[]};
+ document.querySelectorAll('.track').forEach(b=>data.buttons.push(b.classList.contains('active')));
+ document.querySelectorAll('input').forEach(inp=>data.inputs.push(inp.value));
+ localStorage.setItem('trackerData',JSON.stringify(data));
+}
+
+function load(){
+ let data=JSON.parse(localStorage.getItem('trackerData'));
+ if(!data) return;
+ document.querySelectorAll('.track').forEach((b,i)=>{if(data.buttons[i]) b.classList.add('active')});
+ document.querySelectorAll('input').forEach((inp,i)=>{inp.value=data.inputs[i]||''});
+ update();
+}
+
+function updateRowColors(){
+ for(let i=1;i<=30;i++){
+  let row=document.querySelector(`#tracker tr:nth-child(${i+1})`);
+  let buttons=row.querySelectorAll('.track');
+  let allDone=[...buttons].every(b=>b.classList.contains('active'));
+  row.classList.remove('good','bad');
+  if(allDone) row.classList.add('good');
+  else if([...buttons].some(b=>b.classList.contains('active'))) row.classList.add('bad');
+ }
+}
+
+const dates=["May 1","May 2","May 3","May 4","May 5","May 6","May 7","May 8","May 9","May 10","May 11","May 12","May 13","May 14","May 15","May 16","May 17","May 18","May 19","May 20","May 21","May 22","May 23","May 24","May 25","May 26","May 27","May 28","May 29","May 30"];
+
+for(let i=1;i<=30;i++){
+ let r=table.insertRow();
+ r.insertCell(0).innerText=i;
+ r.insertCell(1).innerText=dates[i-1];
+
+ for(let j=0;j<6;j++){
+  let c=r.insertCell(j+2);
+  let b=document.createElement('button');
+  b.innerText='✓';
+  b.classList.add('track');
+  b.onclick=()=>{b.classList.toggle('active');update()};
+  c.appendChild(b);
+ }
+
+ let ex=r.insertCell(8);
+ let inp1=document.createElement('input');
+ inp1.placeholder='Workout';
+ inp1.oninput=saveAll;
+ ex.appendChild(inp1);
+
+ let dur=r.insertCell(9);
+ let inp2=document.createElement('input');
+ inp2.placeholder='mins';
+ inp2.oninput=saveAll;
+ dur.appendChild(inp2);
+
+ let notes=r.insertCell(10);
+ let inp3=document.createElement('input');
+ inp3.placeholder='Notes...';
+ inp3.oninput=saveAll;
+ notes.appendChild(inp3);
+}
+
+load();
+</script>
+
+</body>
+</html>
